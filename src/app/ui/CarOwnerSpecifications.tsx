@@ -9,11 +9,11 @@ export default function CarOwnerSpecifications() {
           <h3 className="text-[16px] font-[500] h-7">لطفا اطلاعات شخصی مالک خودرو را وارد کنید:</h3>
           <div className="flex flex-col gap-1">
             <div className="flex flex-col gap-1">
-              <input type="text" placeholder="کد ملی" className="input" />
+              <input type="number" placeholder="کد ملی" className="input" />
               <p className="h-5"></p>
             </div>
             <div className="flex flex-col gap-1">
-              <input type="text" placeholder="شماره تلفن همراه" className="input" />
+              <input type="number" placeholder="شماره تلفن همراه" className="input" />
               <p className="h-5"></p>
             </div>
           </div>
