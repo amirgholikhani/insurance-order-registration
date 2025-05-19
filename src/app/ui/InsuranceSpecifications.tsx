@@ -1,6 +1,6 @@
 import Image from "next/image";
-import CarIcon from '@/assets/images/CarIcon.svg'
 import IranPlate from '@/assets/images/IranPlate.svg'
+import CardTitle from "./CardTitle";
 
 interface Plate {
   firstNumber: number,
@@ -33,10 +33,7 @@ export default function InsuranceSpecifications() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex gap-1.5 h-14 items-center px-2 shadow-[0_3px_7px_-1px_#2222221A]">
-        <Image src={CarIcon} alt="Car Icon" />
-        <h1 className="font-[500] text-[18px]">مشخصات بیمه نامه</h1>
-      </div>
+      <CardTitle title="مشخصات بیمه نامه" />
       <div className="flex flex-row-reverse justify-center h-[50px]">
         <div>
           <Image src={IranPlate} alt="Iran Plate" />
