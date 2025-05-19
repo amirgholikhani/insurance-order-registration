@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #FFC453;
+  --color-secondary: #000000;
+}
+
 :root {
   --background: #ececec;
   --foreground: #171717;
@@ -29,4 +36,20 @@ body {
 html, body {
   width: 100%;
   height: 100%;
+}
+
+@utility input {
+  @apply focus:outline-0 shadow-none rounded-none border-[#B4B4B4] p-[13px] h-12 text-[14px] font-[500] text-[#757575];
+}
+
+@utility btn {
+  @apply h-12 rounded-none shadow-none border-0 text-[16px] font-[600];
+}
+
+@utility btn-primary {
+  @apply text-[#000000];
+}
+
+@utility btn-secondary {
+  @apply text-[#FFFFFF] font-[500];
 }
