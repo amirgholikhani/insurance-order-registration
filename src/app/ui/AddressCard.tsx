@@ -9,7 +9,7 @@ interface AddressCardProps {
 }
 
 export default function AddressCard({ address, onDelete, onSelect }: AddressCardProps) {
-  const { details, id, name } = address
+  const { details, name } = address
 
   return (
     <div className="flex flex-col gap-2">

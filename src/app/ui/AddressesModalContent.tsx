@@ -44,7 +44,7 @@ export default function AddressSelectionModal({ ref, handleSelectAddress }: Addr
   React.useEffect(() => {
     const fetchAddreses = async () => {
       const response = await fetch(`${baseUrl}/my-addresses`)
-      let addresses: Address[] = await response.json()
+      const addresses: Address[] = await response.json()
       setAddresses(addresses)
     }
 
