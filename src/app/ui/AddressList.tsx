@@ -1,4 +1,3 @@
-import { baseUrl } from "@/lib/consts"
 import AddressCard from "./AddressCard"
 import React from "react"
 
@@ -11,26 +10,12 @@ export interface Address {
 }
 
 interface AddressListProps {
+  addresses: Address[]
   handleSelect: (address: Address) => void
+  handleDelete: (address: Address) => void
 }
 
-export default function AddressList({ handleSelect }: AddressListProps) {
-  const [addresses, setAddresses] = React.useState<Address[]>([] as Address[])
-
-  const handleDelete = (id: number) => {
-    const filteredAddresses: Address[] = addresses.filter(address => address.id !== id)
-  }
-
-  React.useEffect(() => {
-    const fetchAddreses = async () => {
-      const response = await fetch(`${baseUrl}/my-addresses`)
-      let addresses: Address[] = await response.json()
-      setAddresses(addresses)
-    }
-
-    fetchAddreses()
-  }, [])
-
+export default function AddressList({ addresses, handleSelect, handleDelete }: AddressListProps) {
   return (
     <div className="flex flex-col gap-4 py-2 px-3">
       {addresses.map(address => <AddressCard key={address.id} address={address} onSelect={handleSelect} onDelete={handleDelete} />)}

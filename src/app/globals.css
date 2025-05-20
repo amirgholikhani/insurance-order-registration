@@ -55,7 +55,17 @@ html, body {
 }
 
 @utility btn-secondary {
-  @apply text-[#FFFFFF] font-[500];
+  &:not(.btn-outline) {
+    @apply text-[#FFFFFF] font-[500];
+  }
+}
+
+@utility btn-outline {
+  @apply text-[#000000] border-1;
+
+  &:hover {
+    @apply bg-white;
+  }
 }
 
 input::-webkit-outer-spin-button,

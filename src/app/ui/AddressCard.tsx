@@ -4,7 +4,7 @@ import { Address } from "./AddressList";
 
 interface AddressCardProps {
   address: Address
-  onDelete: (id: number) => void
+  onDelete: (address: Address) => void
   onSelect: (address: Address) => void
 }
 
@@ -23,7 +23,7 @@ export default function AddressCard({ address, onDelete, onSelect }: AddressCard
           />
           <span className="text-[14px] fornt-[500]">{name}</span>
         </div>
-        <span className="cursor-pointer" onClick={() => onDelete(id)}><Image src={TrashIcon} alt="Trash Icon" /></span>
+        <span className="cursor-pointer" onClick={() => onDelete(address)}><Image src={TrashIcon} alt="Trash Icon" /></span>
       </div>
       <p className="text-[12px] fornt-[400] text-[#757575] px-6">{details}</p>
     </div>

@@ -2,9 +2,8 @@
 import { useForm } from "react-hook-form";
 import CardTitle from "./CardTitle";
 import React from "react";
-import Image from "next/image";
-import CloseIcon from '@/assets/images/CloseIcon.svg'
-import AddressList, { Address } from "./AddressList";
+import { Address } from "./AddressList";
+import AddressSelectionModal from "./AddressesModalContent";
 
 interface CarOwnerData {
   phoneNumber: string
@@ -34,12 +33,9 @@ export default function CarOwnerSpecifications() {
     console.log('data', data)
   }
 
-  const handleSelect = (address: Address) => {
+  const handleSelectAddress = (address: Address) => {
     setSelectedAddress(address)
-  }
-
-  const handleSelectAddress = () => {
-    setValue('addressId', String(selectedAddress.id), { shouldValidate: true })
+    setValue('addressId', String(address.id), { shouldValidate: true })
     handleCloseModal()
   }
 
@@ -82,20 +78,7 @@ export default function CarOwnerSpecifications() {
           <button className="btn btn-secondary" type="submit" disabled={!watch('nationalId') || !watch('phoneNumber')}>تایید و ادامه</button>
         </div>
       </form>
-      <dialog ref={dialogRef} id="my_modal_5" className="modal modal-bottom max-w-[360px] justify-self-center">
-        <div className="modal-box rounded-none p-0 flex flex-col gap-2">
-          <div className="flex justify-between items-center px-3 py-4 border-b-1 border-[#E0E0E0]">
-            <h3 className="text-[16px] font-[500]">انتخاب آدرس</h3>
-            <div className="p-[5px] cursor-pointer" onClick={handleCloseModal}>
-              <Image src={CloseIcon} alt="Close Icon" />
-            </div>
-          </div>
-          <AddressList handleSelect={handleSelect} />
-          <div className="p-2.5 shadow-[0px_3px_15px_3px_#2222221A]">
-            <button className="btn btn-secondary w-full" type="button" disabled={!selectedAddress.id} onClick={handleSelectAddress}>انتخاب</button>
-          </div>
-        </div>
-      </dialog>
+      <AddressSelectionModal ref={dialogRef} handleSelectAddress={handleSelectAddress} />
     </div>
   )
 }
