@@ -48,16 +48,19 @@ export default function InsuranceSpecifications() {
         <div className="flex w-[55px] items-center justify-center border-2 border-l-0 rounded-r-[5px] font-[500] text-[18px]">{thirdNumber}</div>
       </div>
       <div className="flex flex-col self-center gap-2 w-[280px]">
-        <div className="flex justify-between items-center">
+        <div className="flex gap-1.5 items-center">
           <h3 className="font-[400] text-[14px] text-[#808080]">شرکت بیمه گر</h3>
+          <hr className="grow border border-dashed border-[#E0E0E0]" />
           <h3 className="font-[400] text-[14px]">{insurerCompany}</h3>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex gap-1.5 items-center">
           <h3 className="font-[400] text-[14px] text-[#808080]">برند خودرو</h3>
+          <hr className="grow border border-dashed border-[#E0E0E0]" />
           <h3 className="font-[400] text-[14px]">{brand}</h3>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex gap-1.5 items-center">
           <h3 className="font-[400] text-[14px] text-[#808080]">مدل خودرو</h3>
+          <hr className="grow border border-dashed border-[#E0E0E0]" />
           <h3 className="font-[400] text-[14px]">{model}</h3>
         </div>
       </div>
