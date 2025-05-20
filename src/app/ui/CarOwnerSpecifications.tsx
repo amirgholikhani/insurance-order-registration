@@ -4,22 +4,23 @@ import CardTitle from "./CardTitle";
 import React from "react";
 import Image from "next/image";
 import CloseIcon from '@/assets/images/CloseIcon.svg'
-import AddressList from "./AddressList";
+import AddressList, { Address } from "./AddressList";
 
 interface CarOwnerData {
   phoneNumber: string
-  internationalCode: string
-  address: string
+  nationalId: string
+  addressId: string
 }
 
 export default function CarOwnerSpecifications() {
-  const { register, handleSubmit, formState: { errors } } = useForm<CarOwnerData>()
+  const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm<CarOwnerData>()
   const dialogRef = React.useRef<HTMLDialogElement>(null)
-  const [selectedAddress, setSelectedAddress] = React.useState(0)
+  const [selectedAddress, setSelectedAddress] = React.useState<Address>({} as Address)
 
-  const nationalCodeIsInvalid = errors?.internationalCode?.type === 'validate'
+  const nationalCodeIsInvalid = errors?.nationalId?.type === 'validate'
   const phonNumberIsInvalid = errors?.phoneNumber?.type === 'validate'
-  const addressIsInvalid = errors?.address?.type === 'required'
+  const addressIsInvalid = errors?.addressId?.type === 'required'
+  const addressDescription = watch('addressId') ? selectedAddress.details : 'لطفا آدرسی را که میخواهید روی بیمه نامه درج شود، را وارد کنید.'
 
   const handleOpenModal = () => {
     dialogRef.current?.showModal()
@@ -33,12 +34,13 @@ export default function CarOwnerSpecifications() {
     console.log('data', data)
   }
 
-  const handleSelect = (id: number) => {
-    setSelectedAddress(id)
+  const handleSelect = (address: Address) => {
+    setSelectedAddress(address)
   }
 
   const handleSelectAddress = () => {
-    
+    setValue('addressId', String(selectedAddress.id), { shouldValidate: true })
+    handleCloseModal()
   }
 
   return (
@@ -49,12 +51,12 @@ export default function CarOwnerSpecifications() {
           <h3 className="text-[16px] font-[500] h-7">لطفا اطلاعات شخصی مالک خودرو را وارد کنید:</h3>
           <div className="flex flex-col gap-1">
             <div className="flex flex-col gap-1">
-              <input {...register('internationalCode', {
+              <input {...register('nationalId', {
                 required: true,
                 validate:  value => !!value.match(/^[0-9]{10}$/g)
               })} type="number" placeholder="کد ملی" className={`input ${nationalCodeIsInvalid && 'input-error border-[#E61F10] text-[#E61F10]'}`} />
               <div className="h-5 flex items-center">
-                {errors?.internationalCode?.type === 'validate' && <p className="text-[#E61F10] text-[14px] font-[400]">کدملی وارد شده معتبر نیست.</p>}
+                {errors?.nationalId?.type === 'validate' && <p className="text-[#E61F10] text-[14px] font-[400]">کدملی وارد شده معتبر نیست.</p>}
               </div>
             </div>
             <div className="flex flex-col gap-1">
@@ -70,14 +72,14 @@ export default function CarOwnerSpecifications() {
         </div>
         <div className="flex flex-col gap-1.5">
           <h3 className="text-[16px] font-[500] h-7">آدرس جهت درج روی بیمه نامه</h3>
-          <input type="hidden" {...register('address', {
+          <input type="hidden" {...register('addressId', {
             required: true
           })}  />
-          <h4 className={`text-[14px] font-[400] leading-7 ${addressIsInvalid && 'text-[#E61F10]'}`}>لطفا آدرسی را که میخواهید روی بیمه نامه درج شود، را وارد کنید.</h4>
-          <button className="btn btn-primary" type="button" onClick={handleOpenModal}>انتخاب از آدرس های من</button>
+          <h4 className={`text-[14px] font-[400] leading-7 ${addressIsInvalid && 'text-[#E61F10]'}`}>{addressDescription}</h4>
+          {!watch('addressId') && <button className="btn btn-primary" type="button" onClick={handleOpenModal}>انتخاب از آدرس های من</button>}
         </div>
         <div className="flex justify-end">
-          <button className="btn btn-secondary" type="submit">تایید و ادامه</button>
+          <button className="btn btn-secondary" type="submit" disabled={!watch('nationalId') || !watch('phoneNumber')}>تایید و ادامه</button>
         </div>
       </form>
       <dialog ref={dialogRef} id="my_modal_5" className="modal modal-bottom max-w-[360px] justify-self-center">
@@ -90,7 +92,7 @@ export default function CarOwnerSpecifications() {
           </div>
           <AddressList handleSelect={handleSelect} />
           <div className="p-2.5 shadow-[0px_3px_15px_3px_#2222221A]">
-            <button className="btn btn-secondary w-full" type="button" onClick={handleSelectAddress}>انتخاب</button>
+            <button className="btn btn-secondary w-full" type="button" disabled={!selectedAddress.id} onClick={handleSelectAddress}>انتخاب</button>
           </div>
         </div>
       </dialog>

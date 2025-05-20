@@ -11,7 +11,7 @@ export interface Address {
 }
 
 interface AddressListProps {
-  handleSelect: (id: number) => void
+  handleSelect: (address: Address) => void
 }
 
 export default function AddressList({ handleSelect }: AddressListProps) {
