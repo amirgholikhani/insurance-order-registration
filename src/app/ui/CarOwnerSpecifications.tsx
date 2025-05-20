@@ -4,6 +4,8 @@ import CardTitle from "./CardTitle";
 import React from "react";
 import { Address } from "./AddressList";
 import AddressSelectionModal from "./AddressesModalContent";
+import { baseUrl } from "@/lib/consts";
+import { useRouter } from "next/navigation";
 
 interface CarOwnerData {
   phoneNumber: string
@@ -15,6 +17,7 @@ export default function CarOwnerSpecifications() {
   const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm<CarOwnerData>()
   const dialogRef = React.useRef<HTMLDialogElement>(null)
   const [selectedAddress, setSelectedAddress] = React.useState<Address>({} as Address)
+  const router = useRouter()
 
   const nationalCodeIsInvalid = errors?.nationalId?.type === 'validate'
   const phonNumberIsInvalid = errors?.phoneNumber?.type === 'validate'
@@ -30,8 +33,28 @@ export default function CarOwnerSpecifications() {
   }
 
   const onSubmit = (data: CarOwnerData) => {
-    console.log('data', data)
+    postData(data)
   }
+
+  const postData = async (data: CarOwnerData) => {
+    try {
+      const response = await fetch(`${baseUrl}/order/completion`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      router.push('/receipt')
+    } catch (error) {
+      console.error("There was an error:", error);
+    }
+  };
 
   const handleSelectAddress = (address: Address) => {
     setSelectedAddress(address)
