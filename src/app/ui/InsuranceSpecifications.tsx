@@ -1,5 +1,6 @@
 import Image from "next/image";
 import IranPlate from '@/assets/images/IranPlate.svg'
+import ValidFormImage from '@/assets/images/ValidFormImage.svg'
 import CardTitle from "./CardTitle";
 
 interface Plate {
@@ -16,7 +17,7 @@ interface Car {
   insurerCompany: string
 }
 
-export default function InsuranceSpecifications() {
+export default function InsuranceSpecifications({ hasSuccessfulMessage = false }: { hasSuccessfulMessage?: boolean }) {
   const carData: Car = {
     plateNumber: {
       firstNumber: 64,
@@ -34,6 +35,12 @@ export default function InsuranceSpecifications() {
   return (
     <div className="flex flex-col gap-6">
       <CardTitle title="مشخصات بیمه نامه" />
+      {hasSuccessfulMessage && (
+        <div className="flex flex-col items-center gap-4 px-8">
+          <Image src={ValidFormImage} alt="Valid Form Image" />
+          <h2 className="text-[16px] font-[500]">ثبت اطلاعات شما، با <span className="text-green-700">موفقیت</span> انجام شد.</h2>
+        </div>
+      )}
       <div className="flex flex-row-reverse justify-center h-[50px]">
         <div>
           <Image src={IranPlate} alt="Iran Plate" />
