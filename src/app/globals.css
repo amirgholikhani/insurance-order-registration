@@ -1,7 +1,15 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #FFC453;
+  --color-secondary: #000000;
+}
 
 :root {
-  --background: #ffffff;
+  --background: #ececec;
   --foreground: #171717;
 }
 
@@ -23,4 +31,54 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+@utility input {
+  @apply focus:outline-0 shadow-none rounded-none border-[#B4B4B4] p-[13px] h-12 text-[14px] font-[500] text-[#757575];
+}
+
+@utility btn {
+  @apply h-12 rounded-none shadow-none border-0 text-[16px] font-[600];
+
+  &:is(:disabled) {
+    @apply bg-[#DAD8D8] text-[#858484];
+  }
+}
+
+@utility btn-primary {
+  @apply text-[#000000];
+}
+
+@utility btn-secondary {
+  &:not(.btn-outline) {
+    @apply text-[#FFFFFF] font-[500];
+  }
+}
+
+@utility btn-outline {
+  @apply text-[#000000] border-1;
+
+  &:hover {
+    @apply bg-white;
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+:where(.modal[open], .modal-open, .modal-toggle:checked + .modal):not(.modal-start, .modal-end) {
+  scrollbar-gutter: unset;
 }
