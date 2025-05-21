@@ -1,26 +1,26 @@
 'use client'
 
-import React, { RefObject } from "react"
+import React, { memo, RefObject } from "react"
 import AddressList, { Address } from "./AddressList"
 import { baseUrl } from "@/lib/consts"
 import Image from "next/image";
 import CloseIcon from '@/assets/images/CloseIcon.svg'
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface AddressSelectionModalProps {
   ref: RefObject<HTMLDialogElement | null>
   handleSelectAddress: (Address: Address) => void
 }
 
-export default function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionModalProps) {
+function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionModalProps) {
   const [addresses, setAddresses] = React.useState<Address[]>([] as Address[])
   const [selectedAddress, setSelectedAddress] = React.useState<Address>({} as Address)
   const [removableAddress, setRemovableAddress] = React.useState<Address>({} as Address)
   const router = useRouter();
 
-  const handleSelect = (address: Address) => {
+  const handleSelect = React.useCallback((address: Address) => {
     setSelectedAddress(address)
-  }
+  }, [])
 
   const clearRemovableAddress = () => {
     setRemovableAddress({} as Address)
@@ -31,9 +31,9 @@ export default function AddressSelectionModal({ ref, handleSelectAddress }: Addr
     ref.current?.close()
   }
 
-  const handleDelete = (address: Address) => {
+  const handleDelete = React.useCallback((address: Address) => {
     setRemovableAddress(address)
-  }
+  }, [])
 
   const handleDeleteItem = () => {
     const filteredAddresses: Address[] = addresses.filter(address => address.id !== removableAddress.id)
@@ -139,3 +139,5 @@ export default function AddressSelectionModal({ ref, handleSelectAddress }: Addr
     </dialog>
   )
 }
+
+export default memo(AddressSelectionModal)

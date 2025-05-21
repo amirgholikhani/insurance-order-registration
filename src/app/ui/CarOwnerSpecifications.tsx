@@ -56,11 +56,11 @@ export default function CarOwnerSpecifications() {
     }
   };
 
-  const handleSelectAddress = (address: Address) => {
+  const handleSelectAddress = React.useCallback((address: Address) => {
     setSelectedAddress(address)
     setValue('addressId', String(address.id), { shouldValidate: true })
     handleCloseModal()
-  }
+  }, [])
 
   return (
     <div className="flex flex-col gap-6">
