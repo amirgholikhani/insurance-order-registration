@@ -1,6 +1,7 @@
 import Image from "next/image";
 import TrashIcon from '@/assets/images/TrashIcon.svg'
 import { Address } from "./AddressList";
+import { memo } from "react";
 
 interface AddressCardProps {
   address: Address
@@ -8,7 +9,7 @@ interface AddressCardProps {
   onSelect: (address: Address) => void
 }
 
-export default function AddressCard({ address, onDelete, onSelect }: AddressCardProps) {
+function AddressCard({ address, onDelete, onSelect }: AddressCardProps) {
   const { details, name } = address
 
   return (
@@ -29,3 +30,5 @@ export default function AddressCard({ address, onDelete, onSelect }: AddressCard
     </div>
   )
 }
+
+export default memo(AddressCard)

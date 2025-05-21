@@ -1,22 +1,26 @@
-import React, { RefObject } from "react"
+'use client'
+
+import React, { memo, RefObject } from "react"
 import AddressList, { Address } from "./AddressList"
 import { baseUrl } from "@/lib/consts"
 import Image from "next/image";
 import CloseIcon from '@/assets/images/CloseIcon.svg'
+import { useRouter } from "next/navigation";
 
 interface AddressSelectionModalProps {
   ref: RefObject<HTMLDialogElement | null>
   handleSelectAddress: (Address: Address) => void
 }
 
-export default function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionModalProps) {
+function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionModalProps) {
   const [addresses, setAddresses] = React.useState<Address[]>([] as Address[])
   const [selectedAddress, setSelectedAddress] = React.useState<Address>({} as Address)
   const [removableAddress, setRemovableAddress] = React.useState<Address>({} as Address)
+  const router = useRouter();
 
-  const handleSelect = (address: Address) => {
+  const handleSelect = React.useCallback((address: Address) => {
     setSelectedAddress(address)
-  }
+  }, [])
 
   const clearRemovableAddress = () => {
     setRemovableAddress({} as Address)
@@ -27,9 +31,9 @@ export default function AddressSelectionModal({ ref, handleSelectAddress }: Addr
     ref.current?.close()
   }
 
-  const handleDelete = (address: Address) => {
+  const handleDelete = React.useCallback((address: Address) => {
     setRemovableAddress(address)
-  }
+  }, [])
 
   const handleDeleteItem = () => {
     const filteredAddresses: Address[] = addresses.filter(address => address.id !== removableAddress.id)
@@ -51,11 +55,54 @@ export default function AddressSelectionModal({ ref, handleSelectAddress }: Addr
     fetchAddreses()
   }, [])
 
+  React.useEffect(() => {
+    // Prevent back navigation to the previous page
+    const handlePopState = () => {
+      // Custom logic for when the user tries to navigate back
+      if (removableAddress.id) {
+        clearRemovableAddress()
+      } else {
+        handleCloseModal()
+      }
+      window.history.pushState(null, '', window.location.href);
+      return false
+    }
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+
+  }, [router, removableAddress])
+  
+
+  // in pages router
+  // React.useEffect(() => {
+  //   // Prevent back navigation to the previous page
+  //   router.beforePopState((state) => {
+  //     // Custom logic for when the user tries to navigate back
+  //     if (removableAddress.id) {
+  //       clearRemovableAddress()
+  //     } else {
+  //       handleCloseModal()
+  //     }
+  //     window.history.pushState(null, '', window.location.pathname);
+  //     return false
+  //   });
+
+  //   return () => {
+  //     // Clean up on unmount
+  //     router.beforePopState(() => true); // Revert back to default behavior
+  //   };
+  // }, [router, removableAddress]);
+
+
   return (
     <dialog ref={ref} id="my_modal_5" className="modal modal-bottom max-w-[360px] justify-self-center">
       <div className="modal-box rounded-none p-0 flex flex-col gap-2">
         <div className="flex justify-between items-center px-3 py-4 border-b-1 border-[#E0E0E0]">
-          <h3 className="text-[16px] font-[500]">انتخاب آدرس</h3>
+          <h3 className="text-[16px] font-[500]">{removableAddress.id ? 'حذف آدرس' : 'انتخاب آدرس'}</h3>
           <div className="p-[5px] cursor-pointer" onClick={handleCloseModal}>
             <Image src={CloseIcon} alt="Close Icon" />
           </div>
@@ -92,3 +139,5 @@ export default function AddressSelectionModal({ ref, handleSelectAddress }: Addr
     </dialog>
   )
 }
+
+export default memo(AddressSelectionModal)

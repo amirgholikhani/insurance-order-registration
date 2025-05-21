@@ -2,34 +2,10 @@ import Image from "next/image";
 import IranPlate from '@/assets/images/IranPlate.svg'
 import ValidFormImage from '@/assets/images/ValidFormImage.svg'
 import CardTitle from "./CardTitle";
-
-interface Plate {
-  firstNumber: number,
-  secondNumber: number,
-  thirdNumber: number,
-  word: string,
-}
-
-interface Car {
-  plateNumber: Plate
-  brand: string
-  model: string
-  insurerCompany: string
-}
+import InsuranceItem from "./InsuranceItem";
+import { carData } from "@/lib/consts";
 
 export default function InsuranceSpecifications({ hasSuccessfulMessage = false }: { hasSuccessfulMessage?: boolean }) {
-  const carData: Car = {
-    plateNumber: {
-      firstNumber: 64,
-      secondNumber: 988,
-      thirdNumber: 60,
-      word: 'ک',
-    },
-    brand: 'پژو',
-    model: '206 تیپ 6',
-    insurerCompany: 'پارسیان'
-  }
-
   const { brand, insurerCompany, model, plateNumber: { firstNumber, secondNumber, thirdNumber, word } } = carData
 
   return (
@@ -55,21 +31,9 @@ export default function InsuranceSpecifications({ hasSuccessfulMessage = false }
         <div className="flex w-[55px] items-center justify-center border-2 border-l-0 rounded-r-[5px] font-[500] text-[18px]">{thirdNumber}</div>
       </div>
       <div className="flex flex-col self-center gap-2 w-[280px]">
-        <div className="flex gap-1.5 items-center">
-          <h3 className="font-[400] text-[14px] text-[#808080]">شرکت بیمه گر</h3>
-          <hr className="grow border border-dashed border-[#E0E0E0]" />
-          <h3 className="font-[400] text-[14px]">{insurerCompany}</h3>
-        </div>
-        <div className="flex gap-1.5 items-center">
-          <h3 className="font-[400] text-[14px] text-[#808080]">برند خودرو</h3>
-          <hr className="grow border border-dashed border-[#E0E0E0]" />
-          <h3 className="font-[400] text-[14px]">{brand}</h3>
-        </div>
-        <div className="flex gap-1.5 items-center">
-          <h3 className="font-[400] text-[14px] text-[#808080]">مدل خودرو</h3>
-          <hr className="grow border border-dashed border-[#E0E0E0]" />
-          <h3 className="font-[400] text-[14px]">{model}</h3>
-        </div>
+        <InsuranceItem title="شرکت بیمه گر" value={insurerCompany} />
+        <InsuranceItem title="برند خودرو" value={brand} />
+        <InsuranceItem title="مدل خودرو" value={model} />
       </div>
     </div>
   )

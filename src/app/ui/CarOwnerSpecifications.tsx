@@ -41,26 +41,26 @@ export default function CarOwnerSpecifications() {
       const response = await fetch(`${baseUrl}/order/completion`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        redirect: 'manual',
       });
   
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.status === 301 || response.status === 0) {
+        router.push('/receipt')
       }
   
-      router.push('/receipt')
     } catch (error) {
       console.error("There was an error:", error);
     }
   };
 
-  const handleSelectAddress = (address: Address) => {
+  const handleSelectAddress = React.useCallback((address: Address) => {
     setSelectedAddress(address)
     setValue('addressId', String(address.id), { shouldValidate: true })
     handleCloseModal()
-  }
+  }, [])
 
   return (
     <div className="flex flex-col gap-6">
