@@ -2,7 +2,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, Create env file and copy env.sample content to env
+### 🔧 Environment Setup
+
+1. Create a `.env` file in the root directory of the project.
+2. Copy the contents of `.env.sample` into `.env`:
+
+   ```bash
+   cp .env.sample .env
 
 And then, run the development server:
 
