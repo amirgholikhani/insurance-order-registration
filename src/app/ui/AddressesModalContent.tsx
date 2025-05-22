@@ -6,7 +6,6 @@ import { baseUrl } from "@/lib/consts"
 import Image from "next/image";
 import CloseIcon from '@/assets/images/CloseIcon.svg'
 import { useRouter } from "next/navigation";
-import axios from "axios";
 
 interface AddressSelectionModalProps {
   ref: RefObject<HTMLDialogElement | null>
@@ -48,10 +47,10 @@ function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionMod
 
   React.useEffect(() => {
     const fetchAddreses = async () => {
-      const response = await axios.get(`${baseUrl}/my-addresses`, {
-        withCredentials: true
+      const response = await fetch(`${baseUrl}/my-addresses`, {
+        credentials: 'include',
       })
-      const addresses: Address[] = response.data
+      const addresses: Address[] = await response.json()
       setAddresses(addresses)
     }
 

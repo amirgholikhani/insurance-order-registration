@@ -7,7 +7,6 @@ import AddressSelectionModal from "./AddressesModalContent";
 import { baseUrl } from "@/lib/consts";
 import { useRouter } from "next/navigation";
 import ServerErrorModal from "./ServerErrorModal";
-import axios from "axios";
 
 interface CarOwnerData {
   phoneNumber: string
@@ -62,13 +61,18 @@ export default function CarOwnerSpecifications() {
   const postData = async (data: CarOwnerData) => {
     setLoading(true)
     try {
-      await axios.post(`${baseUrl}/order/completion/`, data, {
+        const response = await fetch(`${baseUrl}/order/completion/`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        withCredentials: true
+        body: JSON.stringify(data),
+        credentials: 'include',
+        mode: 'cors',
       });
-      
+
+      await response.json()
+
       router.push('/receipt')
   
     } catch (error) {
