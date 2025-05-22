@@ -47,7 +47,9 @@ function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionMod
 
   React.useEffect(() => {
     const fetchAddreses = async () => {
-      const response = await fetch(`${baseUrl}/my-addresses`)
+      const response = await fetch(`${baseUrl}/my-addresses`, {
+        credentials: 'include',
+      })
       const addresses: Address[] = await response.json()
       setAddresses(addresses)
     }
