@@ -6,6 +6,8 @@ import { Address } from "./AddressList";
 import AddressSelectionModal from "./AddressesModalContent";
 import { baseUrl } from "@/lib/consts";
 import { useRouter } from "next/navigation";
+import ServerErrorModal from "./ServerErrorModal";
+import axios from "axios";
 
 interface CarOwnerData {
   phoneNumber: string
@@ -16,6 +18,8 @@ interface CarOwnerData {
 export default function CarOwnerSpecifications() {
   const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm<CarOwnerData>()
   const dialogRef = React.useRef<HTMLDialogElement>(null)
+  const serverErrorModalRef = React.useRef<HTMLDialogElement>(null)
+  const [loading, setLoading] = React.useState(false)
   const [selectedAddress, setSelectedAddress] = React.useState<Address>({} as Address)
   const router = useRouter()
 
@@ -24,6 +28,17 @@ export default function CarOwnerSpecifications() {
   const addressIsInvalid = errors?.addressId?.type === 'required'
   const addressDescription = watch('addressId') ? selectedAddress.details : 'لطفا آدرسی را که میخواهید روی بیمه نامه درج شود، را وارد کنید.'
 
+  function isValidIranianNationalId(input: string) {
+    if (!/^\d{10}$/.test(input)) return false;
+    if (/^(\d)\1{9}$/.test(input)) return false; // All digits the same
+  
+    const check = +input[9];
+    const sum = [...input].slice(0, 9).reduce((acc, digit, i) => acc + (+digit * (10 - i)), 0);
+    const remainder = sum % 11;
+  
+    return (remainder < 2 && check === remainder) || (remainder >= 2 && check === 11 - remainder);
+  }
+  
   const handleOpenModal = () => {
     dialogRef.current?.showModal()
   }
@@ -32,27 +47,35 @@ export default function CarOwnerSpecifications() {
     dialogRef.current?.close()
   }
 
+  const handleCloseErrorModal = () => {
+    serverErrorModalRef.current?.close()
+  }
+
   const onSubmit = (data: CarOwnerData) => {
     postData(data)
   }
 
+  const submitDataAgain = () => {
+    onSubmit(watch())
+  }
+
   const postData = async (data: CarOwnerData) => {
+    setLoading(true)
     try {
-      const response = await fetch(`${baseUrl}/order/completion`, {
-        method: 'POST',
+      await axios.post(`${baseUrl}/order/completion/`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-        redirect: 'manual',
+        withCredentials: true
       });
-  
-      if (response.status === 301 || response.status === 0) {
-        router.push('/receipt')
-      }
+      
+      router.push('/receipt')
   
     } catch (error) {
       console.error("There was an error:", error);
+      serverErrorModalRef.current?.showModal()
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -72,7 +95,7 @@ export default function CarOwnerSpecifications() {
             <div className="flex flex-col gap-1">
               <input {...register('nationalId', {
                 required: true,
-                validate:  value => !!value.match(/^[0-9]{10}$/g)
+                validate:  value => isValidIranianNationalId(value)
               })} type="number" placeholder="کد ملی" className={`input ${nationalCodeIsInvalid && 'input-error border-[#E61F10] text-[#E61F10]'}`} />
               <div className="h-5 flex items-center">
                 {errors?.nationalId?.type === 'validate' && <p className="text-[#E61F10] text-[14px] font-[400]">کدملی وارد شده معتبر نیست.</p>}
@@ -98,10 +121,14 @@ export default function CarOwnerSpecifications() {
           {!watch('addressId') && <button className="btn btn-primary" type="button" onClick={handleOpenModal}>انتخاب از آدرس های من</button>}
         </div>
         <div className="flex justify-end">
-          <button className="btn btn-secondary" type="submit" disabled={!watch('nationalId') || !watch('phoneNumber')}>تایید و ادامه</button>
+          <button className="btn btn-secondary" type="submit" disabled={!watch('nationalId') || !watch('phoneNumber') || loading}>
+            {loading && <span className="loading loading-spinner"></span>}
+            تایید و ادامه
+            </button>
         </div>
       </form>
       <AddressSelectionModal ref={dialogRef} handleSelectAddress={handleSelectAddress} />
+      <ServerErrorModal ref={serverErrorModalRef} handleCloseModal={handleCloseErrorModal} handleSubmit={submitDataAgain} loading={loading} />
     </div>
   )
 }
