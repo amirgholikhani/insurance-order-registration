@@ -61,7 +61,7 @@ export default function CarOwnerSpecifications() {
   const postData = async (data: CarOwnerData) => {
     setLoading(true)
     try {
-        const response = await fetch(`${baseUrl}/order/completion/`, {
+      const response = await fetch(`${baseUrl}/order/completion/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
