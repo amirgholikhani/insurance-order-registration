@@ -7,6 +7,7 @@ import AddressSelectionModal from "./AddressesModalContent";
 import { baseUrl } from "@/lib/consts";
 import { useRouter } from "next/navigation";
 import ServerErrorModal from "./ServerErrorModal";
+import { useCarInsuaranceStore } from "@/stores/useCarInsuarance.store";
 
 interface CarOwnerData {
   phoneNumber: string
@@ -15,11 +16,18 @@ interface CarOwnerData {
 }
 
 export default function CarOwnerSpecifications() {
-  const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm<CarOwnerData>()
   const dialogRef = React.useRef<HTMLDialogElement>(null)
   const serverErrorModalRef = React.useRef<HTMLDialogElement>(null)
   const [loading, setLoading] = React.useState(false)
-  const [selectedAddress, setSelectedAddress] = React.useState<Address>({} as Address)
+  const { setData, nationalId, phoneNumber, addressId, address } = useCarInsuaranceStore((state) => state)
+  const [selectedAddress, setSelectedAddress] = React.useState<Address>(address as Address)
+  const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm<CarOwnerData>({
+    defaultValues: {
+      phoneNumber,
+      nationalId,
+      addressId
+    }
+  })
   const router = useRouter()
 
   const nationalCodeIsInvalid = errors?.nationalId?.type === 'validate'
@@ -59,6 +67,7 @@ export default function CarOwnerSpecifications() {
   }
 
   const postData = async (data: CarOwnerData) => {
+    const { phoneNumber, nationalId, addressId } = data
     setLoading(true)
     try {
       const response = await fetch(`${baseUrl}/order/completion/`, {
@@ -68,17 +77,17 @@ export default function CarOwnerSpecifications() {
         },
         body: JSON.stringify(data),
         credentials: 'include',
-        mode: 'cors',
       });
 
       await response.json()
+
+      setData(nationalId, phoneNumber, addressId, selectedAddress)
 
       router.push('/receipt')
   
     } catch (error) {
       console.error("There was an error:", error);
       serverErrorModalRef.current?.showModal()
-    } finally {
       setLoading(false)
     }
   };
@@ -87,6 +96,12 @@ export default function CarOwnerSpecifications() {
     setSelectedAddress(address)
     setValue('addressId', String(address.id), { shouldValidate: true })
     handleCloseModal()
+  }, [])
+
+  React.useEffect(() => {
+    return () => {
+      setLoading(false)
+    }
   }, [])
 
   return (

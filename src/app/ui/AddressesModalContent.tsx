@@ -5,7 +5,7 @@ import AddressList, { Address } from "./AddressList"
 import { baseUrl } from "@/lib/consts"
 import Image from "next/image";
 import CloseIcon from '@/assets/images/CloseIcon.svg'
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AddressSelectionModalProps {
   ref: RefObject<HTMLDialogElement | null>
@@ -17,6 +17,7 @@ function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionMod
   const [selectedAddress, setSelectedAddress] = React.useState<Address>({} as Address)
   const [removableAddress, setRemovableAddress] = React.useState<Address>({} as Address)
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleSelect = React.useCallback((address: Address) => {
     setSelectedAddress(address)
@@ -58,47 +59,23 @@ function AddressSelectionModal({ ref, handleSelectAddress }: AddressSelectionMod
   }, [])
 
   React.useEffect(() => {
-    // Prevent back navigation to the previous page
+
     const handlePopState = () => {
-      // Custom logic for when the user tries to navigate back
+      // User pressed back – re-push current state to prevent back nav
       if (removableAddress.id) {
         clearRemovableAddress()
       } else {
         handleCloseModal()
+        history.pushState(null, '', location.href)
       }
-      window.history.pushState(null, '', window.location.href);
-      return false
     }
 
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', handlePopState)
 
     return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-
-  }, [router, removableAddress])
-  
-
-  // in pages router
-  // React.useEffect(() => {
-  //   // Prevent back navigation to the previous page
-  //   router.beforePopState((state) => {
-  //     // Custom logic for when the user tries to navigate back
-  //     if (removableAddress.id) {
-  //       clearRemovableAddress()
-  //     } else {
-  //       handleCloseModal()
-  //     }
-  //     window.history.pushState(null, '', window.location.pathname);
-  //     return false
-  //   });
-
-  //   return () => {
-  //     // Clean up on unmount
-  //     router.beforePopState(() => true); // Revert back to default behavior
-  //   };
-  // }, [router, removableAddress]);
-
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [router, pathname, removableAddress.id])
 
   return (
     <dialog ref={ref} id="my_modal_5" className="modal modal-bottom max-w-[360px] justify-self-center">
