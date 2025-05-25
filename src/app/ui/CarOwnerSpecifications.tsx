@@ -88,7 +88,6 @@ export default function CarOwnerSpecifications() {
     } catch (error) {
       console.error("There was an error:", error);
       serverErrorModalRef.current?.showModal()
-    } finally {
       setLoading(false)
     }
   };
@@ -97,6 +96,12 @@ export default function CarOwnerSpecifications() {
     setSelectedAddress(address)
     setValue('addressId', String(address.id), { shouldValidate: true })
     handleCloseModal()
+  }, [])
+
+  React.useEffect(() => {
+    return () => {
+      setLoading(false)
+    }
   }, [])
 
   return (
